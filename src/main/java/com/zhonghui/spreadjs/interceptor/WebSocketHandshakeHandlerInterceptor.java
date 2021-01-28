@@ -1,7 +1,5 @@
 package com.zhonghui.spreadjs.interceptor;
 
-import com.zhonghui.core.util.CookieUtils;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -16,6 +14,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,14 +32,14 @@ public class WebSocketHandshakeHandlerInterceptor implements HandshakeIntercepto
 		if(query!=null){
 			params=query.split("&");
 		}
-		Map<String,String> paramMap=new HashedMap();
+		Map<String,String> paramMap=new HashMap();
 		for(int i=0;i<params.length;i++){
 			String[] keyValue=params[i].split("=");
 			paramMap.put(keyValue[0],keyValue[1]);
 		}
 
 		List<String> cookieList=serverHttpRequest.getHeaders().get("Cookie");
-		Map<String,String> cookieMap=new HashedMap();
+		Map<String,String> cookieMap=new HashMap();
 		for(int i=0;cookieList!=null&&i<cookieList.size();i++){
 			String[] cookies=cookieList.get(i).split(";");
 			for(int j=0;j<cookies.length;j++){

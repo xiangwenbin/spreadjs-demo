@@ -7,7 +7,6 @@ import com.zhonghui.spreadjs.controller.base.BaseController;
 import com.zhonghui.spreadjs.vo.BasicInfoVo;
 import com.zhonghui.spreadjs.vo.FormulaTemplateVo;
 import com.zhonghui.spreadjs.vo.ProjectVo;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +48,7 @@ public class WebSocketController extends BaseController {
     @MessageMapping("/save/doc/{docId}")
     public void saveDoc(@DestinationVariable String docId,@Header("sourceSubscription") String sourceSubscription , Message message, @Headers Map headers, @Payload String command) {
         System.out.println("command length:"+command.length());
-        Map<String,Object> sendMap=new HashedMap();
+        Map<String,Object> sendMap=new HashMap<>();
         sendMap.put("sourceSubscription",sourceSubscription);
         messagingTemplate.convertAndSend(MessageFormat.format("/doc/{0}",docId),command,sendMap);
     }

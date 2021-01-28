@@ -1,7 +1,6 @@
 package com.zhonghui.spreadjs.controller.base;
 
 
-import com.zhonghui.core.model.vo.ResultVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -44,13 +43,7 @@ public class CustomErrorController extends BaseController   implements ErrorCont
 		return "/error/" + code;
 	}
 
-	@RequestMapping("/ajax/{code}")
-	@ResponseBody
-	public ResultVo<ErrorBean> handleErrorFromAjax(Model model, WebRequest request, HttpServletResponse response,@PathVariable("code") int code) {
-		//获取statusCode:401,404,500
-		ErrorBean error=new ErrorBean(code, getErrorAttributes(request, true));
-		return ResultVo.fail(code,"",error,ErrorBean.class);
-	}
+
 	/**
 	 * 错误页面 400 404 500
 	 * @param model

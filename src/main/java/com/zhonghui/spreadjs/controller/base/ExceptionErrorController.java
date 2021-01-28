@@ -1,8 +1,6 @@
 package com.zhonghui.spreadjs.controller.base;
 
 import com.zhonghui.spreadjs.exception.CustomException;
-import com.zhonghui.core.model.vo.ResultVo;
-import com.zhonghui.core.util.LoggerUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,10 +27,9 @@ public class ExceptionErrorController extends BaseController {
 	@ApiIgnore
 	@ExceptionHandler(value = CustomException.class)
 	@ResponseBody
-	public ResultVo<String> defaultErrorHandler(HttpServletRequest req, Exception e) {
+	public String defaultErrorHandler(HttpServletRequest req, Exception e) {
 
-        LoggerUtils.error(e);
-		return ResultVo.fail(500,e.getMessage(),String.class);
+		return e.getMessage();
 
 	}
 

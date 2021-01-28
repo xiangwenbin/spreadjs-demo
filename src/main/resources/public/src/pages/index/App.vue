@@ -66,7 +66,6 @@ class App extends Vue {
   designer=null;
   designerConfig=null;
   subscribeId="sub-"+new Date().getTime();
-  // subscribeId=null;
 
   docId=window["docId"];
 
@@ -139,14 +138,7 @@ class App extends Vue {
       client.connect({},(frame)=>{
         resolve(client);
       },(error)=>{
-        console.log("retry:"+this.retry+" error:"+error);
-        if(--this.retry>=0){
-          setTimeout(()=>{
-            this.connnectWebSocket();
-          },5000);
-        }else{
-          console.log("重连失败:"+error);
-        }
+        console.log(error);
       });
     });
   }
@@ -155,7 +147,6 @@ class App extends Vue {
   **/
   connnectWebSocket(){
     this.getStompClient(this.websocketConfig).then((client)=>{
-      this.initRetry();
       this.client=client;
       
       this.client.subscribe(`/doc/${this.docId}`,(frame)=>{
@@ -164,15 +155,8 @@ class App extends Vue {
           //丢弃自己的消息
           if(this.subscribeId==frame.headers["sourceSubscription"]){
             console.log("丢弃自己的消息:"+frame.body);
-          }else{
-            // command._styles = null;
-            var cm = this.designer.getWorkbook().commandManager();
-            cm.removeListener('myListener');
-            cm.execute(command);
-            cm.addListener('myListener',(args)=>{
-              this.onCommandExecute(args);
-            });
-
+          }else{ 
+            this.executeCommand(command);
           }
           
       },{id:this.subscribeId});
@@ -182,123 +166,35 @@ class App extends Vue {
     });
   }
 
+  executeCommand(command){
+    // command._styles = null;
+    var cm = this.designer.getWorkbook().commandManager();
+    cm.removeListener('myListener');
+    cm.execute(command);
+    cm.addListener('myListener',(args)=>{
+      this.onCommandExecute(args);
+    });
+  }
+  
   onCommandExecute(args){
     console.log(args.command);
     var command = args.command;
-    var ServerCommand = null;
 
     if(command.cmd){
-      switch(command.cmd){
-        case ServerCommands.EditCell:
-            ServerCommand = {
-                sheetName: command.sheetName,
-                row: command.row,
-                column: command.col,
-                newValue: command.newValue
-            }
-            break;
-        case ServerCommands.ResizeRow:
-            ServerCommand = {
-                sheetName: command.sheetName,
-                rows: command.rows,
-                size: command.size
-            };
-            break;
-        case ServerCommands.ResizeColumn:
-            ServerCommand = {
-                sheetName: command.sheetName,
-                columns: command.columns,
-                size: command.size
-            };
-            break;
-        case 'Designer.' + ServerCommands.SetFontFamily:
-        case 'Designer.' + ServerCommands.SetFontSize:
-        case 'Designer.' + ServerCommands.SetBackColor:
-        case 'Designer.' + ServerCommands.SetForeColor:
-        case 'Designer.' + ServerCommands.SetFontWeight:
-        case 'Designer.' + ServerCommands.SetFontStyle:
-        case 'Designer.' + ServerCommands.SetUnderline:
-        case 'Designer.' + ServerCommands.SetDoubleUnderline:
-            if(command.value && command.value.indexOf('undefined') === -1){
-                ServerCommand = {
-                    sheetName: command.sheetName,
-                    selections: command.selections,
-                    value: command.value
-                }
-            }
-            break;
-        case ServerCommands.MoveFloatingObjects:
-            ServerCommand = {
-                sheetName: command.sheetName,
-                floatingObjects: command.floatingObjects,
-                offsetX: command.offsetX,
-                offsetY: command.offsetY
-            };
-            break;
-        case ServerCommands.ResizeFloatingObjects:
-            ServerCommand = {
-                sheetName: command.sheetName,
-                floatingObjects: command.floatingObjects,
-                offsetX: command.offsetX,
-                offsetY: command.offsetY,
-                offsetWidth: command.offsetWidth,
-                offsetHeight: command.offsetHeight
-            };
-            break;  
-        case ServerCommands.InsertColumns:
-        case ServerCommands.InsertRows:
-            ServerCommand = {
-                sheetName: command.sheetName,
-                selections: command.selections
-            };
-            break;
-        default:
-      }
-
-      if(ServerCommand != null){
-
-        var cmd = command.cmd;
-        var dotIndex = cmd.lastIndexOf('.');
-        if(dotIndex !== -1){
-            cmd = cmd.substring(dotIndex + 1);
-        }
-        ServerCommand.cmd = cmd;
-        ServerCommand.docId = this.docId;
-        // command.subscribeId=this.subscribeId;
-        // ExecuteCommandAtServer(ServerCommand);
-
-        // this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},JSON.stringify(command));
-        console.log("ServerCommand:"+ServerCommand);
-
-      }
       
       if(command.cmd=="clipboardPaste"){
         command.MA=null;
         command.clipboardHtml=null;
         // command.fromSheet=null;
       }
-      // console.log("command size:"+JSON.stringify(command).length);
-      // // let testCommand=""
-      // // for(let i=0;i<10*1024*1024;i++){
-      // //   testCommand+="d";
-      // // }
-      // command={
-      //   "fromSheet":null,"fromRanges":null,"isCutting":false,"pasteOption":0,"pastedRanges":[{"row":1,"rowCount":1,"col":2,"colCount":1}],"clipboardText":"aaa ","cmd":"clipboardPaste","sheetName":"其他业务收入与成本","clipboardHtml":null,
-      //   "MA":[
-      //     {
-      //       "3":{"value":"#IF(D12-利润表!E10<>0,\"不符,\"&D12-利润表!E10,\"与报表相符\")"},
-      //       "background1":{"a":255,"r":255,"g":255,"b":255},
-      //       "formatter":"_ * #,##0.00_ ;_ * \\-#,##0.00_ ;_ * \"-\"??_ ;_ @_ "
-      //     }
-      //   ],
-      //   "sheetId":4
-      // }
+      
       this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},Base64.encode(JSON.stringify(command)));
-      // this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},testCommand);
 
     }else{
+
       console.log("command.cmd is null");
       console.log(command);
+
     }
   }
 
