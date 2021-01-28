@@ -1,7 +1,6 @@
 package com.zhonghui.spreadjs;
 
 import com.zhonghui.spreadjs.interceptor.MyChannelInterceptor;
-import com.zhonghui.spreadjs.interceptor.OutChannelInterceptor;
 import com.zhonghui.spreadjs.interceptor.WebSocketHandshakeHandlerInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -18,19 +17,12 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
 
     @Autowired
-    WebSocketHandshakeHandlerInterceptor webSocketHandshakeHandlerInterceptor;
-
-    @Autowired
     MyChannelInterceptor myChannelInterceptor;
-
-    @Autowired
-    OutChannelInterceptor outChannelInterceptor;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         //websocket 连接地址
-        registry.addEndpoint("/ws/stomp").addInterceptors(webSocketHandshakeHandlerInterceptor).setAllowedOrigins("*").withSockJS();
-
+        registry.addEndpoint("/ws/stomp").setAllowedOrigins("*").withSockJS();
 
     }
 
@@ -45,11 +37,6 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         channelRegistration.interceptors(myChannelInterceptor);
     }
 
-    @Override
-    public void configureClientOutboundChannel(ChannelRegistration channelRegistration) {
-        channelRegistration.interceptors(outChannelInterceptor);
-    }
-
 
 
     @Override
@@ -57,6 +44,5 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         config.setApplicationDestinationPrefixes("/app");
         //客户端可订阅总类
         config.enableSimpleBroker("/doc", "/user");
-//                .setTaskScheduler(new DefaultManagedTaskScheduler()).setHeartbeatValue(new long[]{20000L, 20000L});
     }
 }

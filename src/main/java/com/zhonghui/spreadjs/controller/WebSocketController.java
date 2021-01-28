@@ -33,6 +33,7 @@ import java.util.Map;
  */
 @Controller
 public class WebSocketController extends BaseController {
+
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
@@ -45,13 +46,11 @@ public class WebSocketController extends BaseController {
      * @param command
      */
     @MessageMapping("/save/doc/{docId}")
-//    @SendTo("/doc/{docId}")
     public void saveDoc(@DestinationVariable String docId,@Header("sourceSubscription") String sourceSubscription , Message message, @Headers Map headers, @Payload String command) {
         System.out.println("command length:"+command.length());
         Map<String,Object> sendMap=new HashedMap();
         sendMap.put("sourceSubscription",sourceSubscription);
         messagingTemplate.convertAndSend(MessageFormat.format("/doc/{0}",docId),command,sendMap);
-//        return command;
     }
 
 }

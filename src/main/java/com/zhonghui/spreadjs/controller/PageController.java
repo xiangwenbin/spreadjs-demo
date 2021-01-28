@@ -20,11 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class PageController extends BaseController {
 
 
-    @RequestMapping(value = {"", "/","/index" },method = RequestMethod.GET)
-    public String info() {
-        return "page/index";
-    }
-
     @RequestMapping(value = {"/index/{docId}/{year}" },method = RequestMethod.GET)
     public String online(@PathVariable int year, @PathVariable String docId,Model model) {
         model.addAttribute("year",year);
@@ -33,8 +28,4 @@ public class PageController extends BaseController {
     }
 
 
-    @RequestMapping(value = { "/browser/support" },method = RequestMethod.GET)
-    public String support() {
-        return "page/browser";
-    }
 }
