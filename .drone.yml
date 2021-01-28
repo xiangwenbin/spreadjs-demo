@@ -1,0 +1,43 @@
+#https://0-8-0.docs.drone.io/getting-started/
+branches: [ master,dev,dev_*,hotfix_* ]
+pipeline:
+  frontend:
+    image: node:8
+    commands:
+    - cd src/main/resources/public
+    - npm install
+    - npm run build
+    - echo 'frontend build succ'
+    when:
+      event: tag
+  maven:
+    image: maven:3.6.0-jdk-8-alpine
+    commands:
+    - mvn versions:set -DnewVersion=${DRONE_TAG##v}-SNAPSHOT
+    - mvn clean package -U  -D maven.test.skip=true build-helper:parse-version dockerfile:build dockerfile:push
+    - echo 'maven ${DRONE_TAG##v} build succ'
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /root/.m2:/root/.m2
+    when:
+      event: tag
+  jenkins:
+    image: jessecollier/curl-alpine:latest
+    commands:
+    # - curl 'http://10.0.101.3:8080/view/k8s/job/k8s-srpeadjs-demo-测试环境/build?token=jenkins123'
+    # - echo 'trigger k8s-srpeadjs-demo-测试环境 job'
+    when:
+      status:  [ success ]
+  notify:
+    image: drillster/drone-email
+    host: smtp.exmail.qq.com
+    username: service@zhcpa.cn
+    password: Zhcpa@123
+    port: 465
+    from: service@zhcpa.cn
+    recipients: [ wbxiang@zhcpa.cn,qlquan@zhcpa.cn,kcheng@zhcpa.cn]
+    subject: "drone build {{build.status}}"
+    body: "&lt;p&gt;git：{{repo.fullName}}&lt;/p&gt;&lt;p&gt;branch：{{repo.branch}}&lt;/p&gt;&lt;p&gt;build number：&lt;a href&#x3D;&#x27;{{build.link}}&#x27; target&#x3D;&#x27;_blank&#x27;&gt;{{build.number}}&lt;/a&gt;&lt;/p&gt;"
+    recipients_only: true
+    when:
+      status: [ failure ]

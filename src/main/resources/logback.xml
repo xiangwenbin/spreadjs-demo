@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
+
+	<property name="GLOBAL_LOG_PATTERN" value="%date{yyyy-MM-dd HH:mm:ss.SSS} - %c - %5p [%thread] %caller{1} - %m%n%xThrowable{full}" />
+
+
+	<appender name="infoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${LOG_PATH:-${java.io.tmpdir:-/tmp}}/infologs/run.%d{yyyy-MM-dd}.%i.log
+			</FileNamePattern>
+			<MaxHistory>15</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${GLOBAL_LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${LOG_PATH:-${java.io.tmpdir:-/tmp}}/errorlogs/error.%d{yyyy-MM-dd}.%i.log
+			</FileNamePattern>
+			<MaxHistory>15</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${GLOBAL_LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="debugLogger" additivity="false" level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	
+	<logger name="infoLogger" additivity="false" level="INFO">
+		<appender-ref ref="infoAppender" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	
+	<logger name="errorLogger" additivity="false" level="ERROR">
+		<appender-ref ref="errorAppender" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+</configuration>

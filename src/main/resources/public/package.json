@@ -1,0 +1,53 @@
+{
+  "name": "base-platform-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service serve",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.8.7",
+    "@grapecity/spread-excelio": "14.0.5",
+    "@grapecity/spread-sheets": "14.0.5",
+    "@grapecity/spread-sheets-barcode": "14.0.5",
+    "@grapecity/spread-sheets-charts": "14.0.5",
+    "@grapecity/spread-sheets-designer": "14.0.5",
+    "@grapecity/spread-sheets-designer-resources-cn": "14.0.5",
+    "@grapecity/spread-sheets-designer-vue": "^14.0.5",
+    "@grapecity/spread-sheets-languagepackages": "14.0.5",
+    "@grapecity/spread-sheets-pdf": "14.0.5",
+    "@grapecity/spread-sheets-pivot-addon": "14.0.5",
+    "@grapecity/spread-sheets-print": "14.0.5",
+    "@grapecity/spread-sheets-resources-zh": "14.0.5",
+    "@grapecity/spread-sheets-shapes": "14.0.5",
+    "@grapecity/spread-sheets-vue": "^14.0.5",
+    "axios": "^0.19.2",
+    "core-js": "^3.6.4",
+    "iview": "^3.5.4",
+    "js-base64": "^3.6.0",
+    "sockjs-client": "^1.5.0",
+    "stompjs": "^2.3.3",
+    "vue": "^2.6.11",
+    "vue-property-decorator": "^8.4.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.3.0",
+    "@vue/cli-plugin-eslint": "~4.3.0",
+    "@vue/cli-service": "~4.3.0",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "babel-eslint": "^10.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-split-webpack-plugin": "^0.2.6",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-vue": "^6.2.2",
+    "node-sass": "^4.12.0",
+    "prettier": "^1.19.1",
+    "sass-loader": "^8.0.2",
+    "vue-template-compiler": "^2.6.11"
+  }
+}

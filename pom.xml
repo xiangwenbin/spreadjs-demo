@@ -1,0 +1,358 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.zhonghui.spreadjs</groupId>
+	<artifactId>srpeadjs-demo</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>spreadjs-demo</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEnxcoding>UTF-8</project.reporting.outputEnxcoding>
+		<java.version>1.8</java.version>
+		<spring.boot.version>2.0.7.RELEASE</spring.boot.version>
+		<spring-framework.version>5.1.0.RELEASE</spring-framework.version>
+        <junit.version>4.11</junit.version>
+		<huitax-core.version>2.0.0-SNAPSHOT</huitax-core.version>
+		<docker.registry>10.0.101.33:80/library</docker.registry>
+	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.7.RELEASE</version>
+	</parent>
+
+	<!-- 仓库配置 -->
+	<repositories>
+		<repository>
+			<id>springio</id>
+			<url>http://10.0.101.6:8081/nexus/content/repositories/springio/</url>
+		</repository>
+		<repository>
+			<id>huitax-releases</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<url>http://10.0.101.6:8081/nexus/content/repositories/huitax-releases/</url>
+		</repository>
+		<repository>
+			<id>huitax-snapshots</id>
+			<url>http://10.0.101.6:8081/nexus/content/repositories/huitax-snapshots/</url>
+		</repository>
+	</repositories>
+
+	<dependencyManagement>
+    	<dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+				<groupId>org.springframework.session</groupId>
+				<artifactId>spring-session-data-redis</artifactId>
+				<version>1.3.0.RELEASE</version>
+				<type>pom</type>
+			</dependency>	
+	    </dependencies>
+	</dependencyManagement>
+
+    <dependencies>
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-properties-migrator</artifactId>
+		</dependency>
+
+		<!-- Spring Boot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-freemarker</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+		</dependency>
+
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+
+        
+
+
+		<dependency>
+			<groupId>com.zhonghui</groupId>
+			<artifactId>huitax-core</artifactId>
+			<version>${huitax-core.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.cloud</groupId>
+					<artifactId>spring-cloud-starter-feign</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+
+        <!-- 文件上传start -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<!-- commons io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+		</dependency>
+
+		<!--poi-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.9</version>
+        </dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.9</version>
+		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>RELEASE</version>
+		</dependency>
+		<!-- 文件上传 end -->
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<!--redis start-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-redis</artifactId>
+		</dependency>
+        <!--redis end -->
+
+		<!-- GCEXCEL -->
+		<dependency>
+			<groupId>com.grapecity.documents</groupId>
+			<artifactId>gcexcel</artifactId>
+			<version>4.0.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
+	</dependencies>
+	
+	<profiles>
+		<profile> <!-- 可以通过 -P ID 来激活 开发环境 -->
+			<id>dev</id>	 <!-- ID 标识符 -->
+			<properties>
+				<env>dev</env>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault> <!-- 默认激活 -->
+			</activation>
+		</profile>
+		<profile> <!-- 可以通过 -P ID 来激活 测试环境 -->
+			<id>test</id> <!-- ID 标识符 -->
+			<properties>
+				<env>test</env>
+			</properties>
+			<dependencies>
+			</dependencies>
+		</profile>
+		<profile> <!-- 可以通过 -P ID 来激活 线上生成环境 -->
+			<id>production</id> <!-- ID 标识符 -->
+			<properties>
+				<env>production</env>
+			</properties>
+			<dependencies>
+			</dependencies>
+		</profile>
+	</profiles>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+					<excludes>
+						<exclude>**/public/**</exclude>
+					</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/public/dist/**</include>
+					<include>**/public/templates/**</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<!--只保留application-${env}.properties文件 -->
+				<directory>src/main/resources/config</directory>
+				<includes>
+					<include>application.properties</include>
+					<include>application-*.properties</include>
+				</includes>
+				<targetPath>config</targetPath>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<filters>
+			<!--设置变量${env} -->
+			<filter>src/main/resources/config/application.properties</filter>
+		</filters>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.zhonghui.spreadjs.App</mainClass>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<!-- 忽略web.xml文件,servlet 3.0支持无web.xml的部署方式 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>parse-version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--https://github.com/spotify/dockerfile-maven-->
+            <!-- 使用 build-helper-maven-plugin  插件生成的版本号来生成镜像  -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <repository>${docker.registry}/${project.artifactId}</repository>
+                    <tag>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</tag>
+                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                    <buildArgs>
+
+                    </buildArgs>
+                </configuration>
+            </plugin>
+		</plugins>
+	</build>
+</project>
