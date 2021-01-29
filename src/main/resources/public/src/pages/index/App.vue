@@ -59,7 +59,7 @@ class App extends Vue {
     heartbeat:{
       outgoing:10000,incoming:10000
     },
-    maxWebSocketFrameSize:1024*1024*10  
+    maxWebSocketFrameSize:1024*10
   }
 
   spread=null;
@@ -134,7 +134,7 @@ class App extends Vue {
       // client will send heartbeats every 10000ms
       client.heartbeat.outgoing = heartbeat.outgoing; 
       client.heartbeat.incoming = heartbeat.incoming;
-      // client.maxWebSocketFrameSize=maxWebSocketFrameSize;
+      client.maxWebSocketFrameSize=maxWebSocketFrameSize;
       client.connect({},(frame)=>{
         resolve(client);
       },(error)=>{
@@ -150,7 +150,7 @@ class App extends Vue {
       this.client=client;
       
       this.client.subscribe(`/doc/${this.docId}`,(frame)=>{
-          let command=JSON.parse(Base64.decode(frame.body));
+          let command=JSON.parse(frame.body);
           
           //丢弃自己的消息
           if(this.subscribeId==frame.headers["sourceSubscription"]){
@@ -182,13 +182,13 @@ class App extends Vue {
 
     if(command.cmd){
       
-      if(command.cmd=="clipboardPaste"){
-        command.MA=null;
-        command.clipboardHtml=null;
-        // command.fromSheet=null;
-      }
+      // if(command.cmd=="clipboardPaste"){
+      //   command.MA=null;
+      //   command.clipboardHtml=null;
+      //   // command.fromSheet=null;
+      // }
       
-      this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},Base64.encode(JSON.stringify(command)));
+      this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},JSON.stringify(command));
 
     }else{
 
