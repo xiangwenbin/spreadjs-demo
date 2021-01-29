@@ -47,7 +47,7 @@ public class WebSocketController extends BaseController {
     @MessageMapping("/save/doc/{docId}")
 //    @SendTo("/doc/{docId}")
     public void saveDoc(@DestinationVariable String docId,@Header("sourceSubscription") String sourceSubscription , Message message, @Headers Map headers, @Payload String command) {
-        System.out.println("command length:"+command.length());
+        System.out.println("command length:"+command.getBytes().length);
         Map<String,Object> sendMap=new HashedMap();
         sendMap.put("sourceSubscription",sourceSubscription);
         messagingTemplate.convertAndSend(MessageFormat.format("/doc/{0}",docId),command,sendMap);

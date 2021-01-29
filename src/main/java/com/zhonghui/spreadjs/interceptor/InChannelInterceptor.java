@@ -1,10 +1,10 @@
 package com.zhonghui.spreadjs.interceptor;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
@@ -19,7 +19,7 @@ import java.util.Map;
  * @author xwb
  */
 @Component
-public class MyChannelInterceptor implements ChannelInterceptor {
+public class InChannelInterceptor implements ChannelInterceptor {
 
 	/**
 	 * client send to server
@@ -31,11 +31,13 @@ public class MyChannelInterceptor implements ChannelInterceptor {
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 		StompCommand command = accessor.getCommand();
-		System.out.println("MyChannelInterceptor preSend messageType: "+command.getMessageType());
+		System.out.println("in preSend messageType: " + accessor.getMessageType());
+//		if(command!=null) {
+//			System.out.println("in preSend messageType: " + command.getMessageType());
+//		}else{
+//			System.out.println("in preSend command:null ");
+//		}
 		return message;
 	}
-
-
-
 
 }

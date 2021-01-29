@@ -37,6 +37,7 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 
 import {Base64} from 'js-base64';
+import * as bytes from 'bytes';
 
 import {ServerCommands} from "../../util/const.js"
 
@@ -59,7 +60,7 @@ class App extends Vue {
     heartbeat:{
       outgoing:10000,incoming:10000
     },
-    maxWebSocketFrameSize:1024*1024*10  
+    maxWebSocketFrameSize:1024*10
   }
 
   spread=null;
@@ -135,7 +136,7 @@ class App extends Vue {
       // client will send heartbeats every 10000ms
       client.heartbeat.outgoing = heartbeat.outgoing; 
       client.heartbeat.incoming = heartbeat.incoming;
-      // client.maxWebSocketFrameSize=maxWebSocketFrameSize;
+      client.maxWebSocketFrameSize=maxWebSocketFrameSize;
       client.connect({},(frame)=>{
         resolve(client);
       },(error)=>{
@@ -159,7 +160,7 @@ class App extends Vue {
       this.client=client;
       
       this.client.subscribe(`/doc/${this.docId}`,(frame)=>{
-          let command=JSON.parse(Base64.decode(frame.body));
+          let command=JSON.parse(frame.body);
           
           //丢弃自己的消息
           if(this.subscribeId==frame.headers["sourceSubscription"]){
@@ -176,7 +177,6 @@ class App extends Vue {
           }
           
       },{id:this.subscribeId});
-      console.log("subscribeId:"+this.subscribeId);
       
 
     });
@@ -273,15 +273,36 @@ class App extends Vue {
       }
       
       if(command.cmd=="clipboardPaste"){
-        command.MA=null;
-        command.clipboardHtml=null;
+        // command.MA=null;
+        // command.clipboardHtml=null;
+        // let temp=JSON.stringify(command);
+        // let max=  1024*12;
+        // while (true) {
+        //   // console.log(temp.length+" "+ max);
+        //   if (temp.length > max) {
+        //     let xx=temp.substring(0, max);
+        //     // console.log("frame:"+xx);
+        //     this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},xx);
+        //     temp = temp.substring(max);
+            
+        //   } else {
+        //     // console.log("frame:"+temp);
+        //     this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},temp);
+        //     return ;
+        //   }
+          
+        // }
+
+        // return;
         // command.fromSheet=null;
       }
       // console.log("command size:"+JSON.stringify(command).length);
-      // // let testCommand=""
-      // // for(let i=0;i<10*1024*1024;i++){
-      // //   testCommand+="d";
-      // // }
+      // let testCommand=""
+      // // 16640  WebSocketSession
+      // for(let i=0;i<1024*16+146;i++){
+      //   testCommand+="d";
+      // }
+      // console.log("bytes:"+this.stringToByte(testCommand).length);
       // command={
       //   "fromSheet":null,"fromRanges":null,"isCutting":false,"pasteOption":0,"pastedRanges":[{"row":1,"rowCount":1,"col":2,"colCount":1}],"clipboardText":"aaa ","cmd":"clipboardPaste","sheetName":"其他业务收入与成本","clipboardHtml":null,
       //   "MA":[
@@ -293,7 +314,7 @@ class App extends Vue {
       //   ],
       //   "sheetId":4
       // }
-      this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},Base64.encode(JSON.stringify(command)));
+      this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},JSON.stringify(command));
       // this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},testCommand);
 
     }else{
@@ -301,6 +322,31 @@ class App extends Vue {
       console.log(command);
     }
   }
+
+  stringToByte(str) {  
+    var bytes = new Array();  
+    var len, c;  
+    len = str.length;  
+    for(var i = 0; i < len; i++) {  
+        c = str.charCodeAt(i);  
+        if(c >= 0x010000 && c <= 0x10FFFF) {  
+            bytes.push(((c >> 18) & 0x07) | 0xF0);  
+            bytes.push(((c >> 12) & 0x3F) | 0x80);  
+            bytes.push(((c >> 6) & 0x3F) | 0x80);  
+            bytes.push((c & 0x3F) | 0x80);  
+        } else if(c >= 0x000800 && c <= 0x00FFFF) {  
+            bytes.push(((c >> 12) & 0x0F) | 0xE0);  
+            bytes.push(((c >> 6) & 0x3F) | 0x80);  
+            bytes.push((c & 0x3F) | 0x80);  
+        } else if(c >= 0x000080 && c <= 0x0007FF) {  
+            bytes.push(((c >> 6) & 0x1F) | 0xC0);  
+            bytes.push((c & 0x3F) | 0x80);  
+        } else {  
+            bytes.push(c & 0xFF);  
+        }  
+    }  
+    return bytes;  
+  }  
 
   resetSheetRowAndCol(workbook){
     for(let i=0;i<workbook.getSheetCount();i++){

@@ -115,7 +115,10 @@ module.exports = {
   chainWebpack: config => {
     for (let name in pages) {
       config.plugin("html-" + name).tap(args => {
-        if (args && args[0]) args[0].minify = false;
+        if (args && args[0]){ 
+          // args[0].template = "raw-loader!" + args[0].template;
+          args[0].minify = false;
+        }
         return args;
       });
     }

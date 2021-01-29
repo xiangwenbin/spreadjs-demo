@@ -2,6 +2,7 @@ package com.zhonghui.spreadjs.interceptor;
 
 import com.zhonghui.core.util.CookieUtils;
 import org.apache.commons.collections.map.HashedMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.server.HandshakeFailureException;
 import org.springframework.web.socket.server.HandshakeHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
@@ -24,6 +26,9 @@ import java.util.Map;
  */
 @Component
 public class WebSocketHandshakeHandlerInterceptor implements HandshakeInterceptor {
+
+
+
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
 		System.out.println("uri:"+serverHttpRequest.getURI());
@@ -59,13 +64,12 @@ public class WebSocketHandshakeHandlerInterceptor implements HandshakeIntercepto
 			return true;
 		}
 
-
-
-
 	}
 
 	@Override
 	public void afterHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Exception e) {
+//		session.setTextMessageSizeLimit(Integer.MAX_VALUE);
+
 		System.out.println("afterHandshake");
 	}
 //	@Override

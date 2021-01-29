@@ -14,11 +14,13 @@ import org.springframework.stereotype.Component;
 public class OutChannelInterceptor implements ChannelInterceptor {
 
 
+
 	@Override
-	public Message<?> postReceive(Message<?> message, MessageChannel channel) {
+	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 		StompCommand command = accessor.getCommand();
-		System.out.println(command.getMessageType());
+		System.out.println("out preSend messageType: " + accessor.getMessageType());
+
 		return message;
 	}
 
