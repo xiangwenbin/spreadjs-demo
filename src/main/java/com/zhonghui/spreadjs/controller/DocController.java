@@ -2,12 +2,15 @@ package com.zhonghui.spreadjs.controller;
 
 
 
+import ch.qos.logback.core.util.FileUtil;
 import com.grapecity.documents.excel.Workbook;
 import com.zhonghui.spreadjs.controller.base.BaseController;
+import com.zhonghui.spreadjs.util.CommonUtil;
 import com.zhonghui.spreadjs.vo.BasicInfoVo;
 import com.zhonghui.spreadjs.vo.FormulaTemplateVo;
 import com.zhonghui.spreadjs.vo.ProjectVo;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.util.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.grapecity.documents.excel.drawing.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -38,7 +42,7 @@ public class DocController extends BaseController {
     };
 
     @Value("classpath:excel/spreadjs-demo.xlsx")
-    Resource resource;
+    Resource templateResource;
 
     @Value("${temp-dir}")
     String tempDir;
@@ -46,10 +50,17 @@ public class DocController extends BaseController {
     @RequestMapping(value = { "/{docId}/{year2}" },method = RequestMethod.GET)
     @ResponseBody
     public String createDocByTemplate(@PathVariable int year2,@PathVariable String docId) throws IOException {
+        String path= CommonUtil.joinFilePath(tempDir,docId+".xlsx");
         int year=5;
         int startYear=2016;
         Workbook workbook = new Workbook();
-        workbook.open(resource.getInputStream());
+        File file =new File(path);
+        if(file.exists()){
+            workbook.open(path);
+            return workbook.toJson();
+        }
+
+        workbook.open(templateResource.getInputStream());
         //基础信息
         BasicInfoVo basicInfo= new BasicInfoVo();
         basicInfo.setCompany("中汇会计师事务所");
@@ -107,7 +118,7 @@ public class DocController extends BaseController {
 
         workbook.processTemplate();
 
-        workbook.save(tempDir+"/"+docId+".xlsx");
+        workbook.save(path);
         return  workbook.toJson();
     }
 
@@ -117,7 +128,7 @@ public class DocController extends BaseController {
         int year=5,year2=10;
         int startYear=2016;
         Workbook workbook = new Workbook();
-        workbook.open(resource.getInputStream());
+        workbook.open(templateResource.getInputStream());
         //基础信息
         BasicInfoVo basicInfo= new BasicInfoVo();
         basicInfo.setCompany("中汇会计师事务所");

@@ -187,6 +187,11 @@ class App extends Vue {
     var command = args.command;
     var ServerCommand = null;
 
+    let frameBody={
+      cmd:command.cmd,
+      docId:this.docId
+    }
+
     if(command.cmd){
       switch(command.cmd){
         case ServerCommands.EditCell:
@@ -269,6 +274,7 @@ class App extends Vue {
 
         // this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},JSON.stringify(command));
         console.log("ServerCommand:"+ServerCommand);
+        frameBody.serverCommand=JSON.stringify(ServerCommand);
 
       }
       
@@ -296,25 +302,13 @@ class App extends Vue {
         // return;
         // command.fromSheet=null;
       }
-      // console.log("command size:"+JSON.stringify(command).length);
       // let testCommand=""
       // // 16640  WebSocketSession
       // for(let i=0;i<1024*16+146;i++){
       //   testCommand+="d";
       // }
-      // console.log("bytes:"+this.stringToByte(testCommand).length);
-      // command={
-      //   "fromSheet":null,"fromRanges":null,"isCutting":false,"pasteOption":0,"pastedRanges":[{"row":1,"rowCount":1,"col":2,"colCount":1}],"clipboardText":"aaa ","cmd":"clipboardPaste","sheetName":"其他业务收入与成本","clipboardHtml":null,
-      //   "MA":[
-      //     {
-      //       "3":{"value":"#IF(D12-利润表!E10<>0,\"不符,\"&D12-利润表!E10,\"与报表相符\")"},
-      //       "background1":{"a":255,"r":255,"g":255,"b":255},
-      //       "formatter":"_ * #,##0.00_ ;_ * \\-#,##0.00_ ;_ * \"-\"??_ ;_ @_ "
-      //     }
-      //   ],
-      //   "sheetId":4
-      // }
-      this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},JSON.stringify(command));
+      frameBody.spreadCommand=JSON.stringify(command);
+      this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},JSON.stringify(frameBody));
       // this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},testCommand);
 
     }else{
