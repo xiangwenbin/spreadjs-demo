@@ -378,4 +378,7 @@ class App extends Vue {
     height:100%;
   }
 }
+.gc-designer-list-control .gc-list-control-container .gc-list-control-item .gc-list-control-item-icon{
+  top:auto;
+}
 </style>
