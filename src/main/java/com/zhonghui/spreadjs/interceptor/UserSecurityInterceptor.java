@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- *  拦截器
+ * @author xwb
+ * 普通认证拦截
  */
-
 public class UserSecurityInterceptor implements HandlerInterceptor {
 
 	@Override

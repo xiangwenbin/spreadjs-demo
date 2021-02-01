@@ -28,7 +28,15 @@ import java.util.Map;
 public class WebSocketHandshakeHandlerInterceptor implements HandshakeInterceptor {
 
 
-
+	/**
+	 * 握手权限认证
+	 * @param serverHttpRequest
+	 * @param serverHttpResponse
+	 * @param webSocketHandler
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
 		System.out.println("uri:"+serverHttpRequest.getURI());
@@ -68,28 +76,7 @@ public class WebSocketHandshakeHandlerInterceptor implements HandshakeIntercepto
 
 	@Override
 	public void afterHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Exception e) {
-//		session.setTextMessageSizeLimit(Integer.MAX_VALUE);
-
 		System.out.println("afterHandshake");
 	}
-//	@Override
-//	public boolean doHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Map<String, Object> map) throws HandshakeFailureException {
-//		System.out.println(serverHttpRequest.getURI());
-//		String query=serverHttpRequest.getURI().getQuery();
-//		String[] params={};
-//		if(query!=null){
-//			params=query.split("&");
-//		}
-//		Map<String,String> paramMap=new HashedMap();
-//		for(int i=0;i<params.length;i++){
-//			String[] keyValue=params[i].split("=");
-//			paramMap.put(keyValue[0],keyValue[1]);
-//		}
-//		if("xwb".equals(serverHttpRequest.getHeaders().get("Authorization"))||"xwb".equals(paramMap.get("token"))){
-//			return true;
-//		}else{
-//			return false;
-//		}
-//	}
 
 }

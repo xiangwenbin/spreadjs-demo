@@ -3,6 +3,7 @@ package com.zhonghui.spreadjs.bean.command;
 import com.grapecity.documents.excel.IWorksheet;
 import com.grapecity.documents.excel.Workbook;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author xwb

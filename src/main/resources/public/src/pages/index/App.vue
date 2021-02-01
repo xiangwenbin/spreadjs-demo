@@ -102,7 +102,7 @@ class App extends Vue {
 
     axios({
       method: "GET",
-      url: `http://localhost:8080/doc/${this.docId}/${window["year"]}`,
+      url: `http://localhost:8080/api/doc/${this.docId}/${window["year"]}`,
       headers: { "X-Requested-With": "XMLHttpRequest" }
       }).then(result => {
         let workbook=this.designer.getWorkbook();
@@ -185,17 +185,18 @@ class App extends Vue {
   onCommandExecute(args){
     console.log(args.command);
     var command = args.command;
-    var ServerCommand = null;
+    var serverCommand = null;
 
     let frameBody={
       cmd:command.cmd,
-      docId:this.docId
+      docId:this.docId,
+      sheetName:command.sheetName
     }
 
     if(command.cmd){
       switch(command.cmd){
         case ServerCommands.EditCell:
-            ServerCommand = {
+            serverCommand = {
                 sheetName: command.sheetName,
                 row: command.row,
                 column: command.col,
@@ -203,14 +204,14 @@ class App extends Vue {
             }
             break;
         case ServerCommands.ResizeRow:
-            ServerCommand = {
+            serverCommand = {
                 sheetName: command.sheetName,
                 rows: command.rows,
                 size: command.size
             };
             break;
         case ServerCommands.ResizeColumn:
-            ServerCommand = {
+            serverCommand = {
                 sheetName: command.sheetName,
                 columns: command.columns,
                 size: command.size
@@ -225,7 +226,7 @@ class App extends Vue {
         case 'Designer.' + ServerCommands.SetUnderline:
         case 'Designer.' + ServerCommands.SetDoubleUnderline:
             if(command.value && command.value.indexOf('undefined') === -1){
-                ServerCommand = {
+                serverCommand = {
                     sheetName: command.sheetName,
                     selections: command.selections,
                     value: command.value
@@ -233,7 +234,7 @@ class App extends Vue {
             }
             break;
         case ServerCommands.MoveFloatingObjects:
-            ServerCommand = {
+            serverCommand = {
                 sheetName: command.sheetName,
                 floatingObjects: command.floatingObjects,
                 offsetX: command.offsetX,
@@ -241,7 +242,7 @@ class App extends Vue {
             };
             break;
         case ServerCommands.ResizeFloatingObjects:
-            ServerCommand = {
+            serverCommand = {
                 sheetName: command.sheetName,
                 floatingObjects: command.floatingObjects,
                 offsetX: command.offsetX,
@@ -252,7 +253,7 @@ class App extends Vue {
             break;  
         case ServerCommands.InsertColumns:
         case ServerCommands.InsertRows:
-            ServerCommand = {
+            serverCommand = {
                 sheetName: command.sheetName,
                 selections: command.selections
             };
@@ -260,21 +261,21 @@ class App extends Vue {
         default:
       }
 
-      if(ServerCommand != null){
+      if(serverCommand != null){
 
         var cmd = command.cmd;
         var dotIndex = cmd.lastIndexOf('.');
         if(dotIndex !== -1){
             cmd = cmd.substring(dotIndex + 1);
         }
-        ServerCommand.cmd = cmd;
-        ServerCommand.docId = this.docId;
+        serverCommand.cmd = cmd;
+        serverCommand.docId = this.docId;
         // command.subscribeId=this.subscribeId;
         // ExecuteCommandAtServer(ServerCommand);
 
         // this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},JSON.stringify(command));
-        console.log("ServerCommand:"+ServerCommand);
-        frameBody.serverCommand=JSON.stringify(ServerCommand);
+        console.log("ServerCommand:"+serverCommand);
+        frameBody.serverCommand=JSON.stringify(serverCommand);
 
       }
       

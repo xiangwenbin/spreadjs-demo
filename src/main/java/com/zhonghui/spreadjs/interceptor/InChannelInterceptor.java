@@ -32,11 +32,6 @@ public class InChannelInterceptor implements ChannelInterceptor {
 		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 		StompCommand command = accessor.getCommand();
 		System.out.println("in preSend messageType: " + accessor.getMessageType());
-//		if(command!=null) {
-//			System.out.println("in preSend messageType: " + command.getMessageType());
-//		}else{
-//			System.out.println("in preSend command:null ");
-//		}
 		return message;
 	}
 

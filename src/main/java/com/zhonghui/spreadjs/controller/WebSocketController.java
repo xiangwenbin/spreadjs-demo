@@ -21,10 +21,8 @@ import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.io.File;
 import java.text.MessageFormat;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -51,7 +49,6 @@ public class WebSocketController extends BaseController {
      * @param body
      */
     @MessageMapping("/save/doc/{docId}")
-//    @SendTo("/doc/{docId}")
     public void saveDoc(@DestinationVariable String docId,@Header("sourceSubscription") String sourceSubscription , Message message, @Headers Map headers, @Payload CommandFrameBodyVo body) {
         if(StringUtils.isNotEmpty(docId)&&StringUtils.isNotEmpty(body.getSheetName())){
             String lockValue=docId+"-"+body.getSheetName();
@@ -73,7 +70,6 @@ public class WebSocketController extends BaseController {
                 messagingTemplate.convertAndSend(MessageFormat.format("/doc/{0}",docId),body.getSpreadCommand(),sendMap);
             }
         }
-//        return command;
     }
 
     private void executeCommand(BaseCommand baseCommand, Workbook workbook) {
