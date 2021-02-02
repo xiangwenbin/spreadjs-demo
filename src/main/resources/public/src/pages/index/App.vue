@@ -80,7 +80,7 @@ class App extends Vue {
     this.designerConfig=c;
   }
 
-  create(){
+  created(){
     this.initRetry();
     this.initDesingerConfig();
     
