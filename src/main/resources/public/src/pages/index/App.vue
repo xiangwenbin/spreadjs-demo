@@ -76,13 +76,17 @@ class App extends Vue {
   }
 
   initDesingerConfig(){
+    
+
     let c=JSON.parse(
       JSON.stringify(DesignerGC.Spread.Sheets.Designer.DefaultConfig)
     );
     this.designerConfig=c;
+    console.log("xxxx");
+    console.log(DesignerGC.Spread.Sheets.Designer.DefaultConfig);
   }
 
-  create(){
+  created(){
     this.initRetry();
     this.initDesingerConfig();
     
