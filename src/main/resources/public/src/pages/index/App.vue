@@ -71,19 +71,33 @@ class App extends Vue {
 
   docId=window["docId"];
 
+  disabledMenuList=[
+    GC.Spread.Sheets.Designer.CommandNames.CellType,
+    GC.Spread.Sheets.Designer.CommandNames.CellsInsert,
+    GC.Spread.Sheets.Designer.CommandNames.InsertShape
+    ];
+
   initRetry(){
     this.retry=5;
   }
 
   initDesingerConfig(){
-    
-
     let c=JSON.parse(
       JSON.stringify(DesignerGC.Spread.Sheets.Designer.DefaultConfig)
     );
+    c.commandMap={};
+    //添加协作下菜单禁用标记
+    // for(let i=0;i<this.disabledMenuList.length;i++){
+    //   let command=GC.Spread.Sheets.Designer.getCommand(this.disabledMenuList[i]);
+    //   command.enableContext=command.enableContext+"&&!coopetation";
+    //   c.commandMap[command.commandName]=command;
+    // }
+
+
     this.designerConfig=c;
-    console.log("xxxx");
-    console.log(DesignerGC.Spread.Sheets.Designer.DefaultConfig);
+    
+    console.log("this.designerConfig",this.designerConfig);
+    console.log("GC",GC);
   }
 
   created(){
@@ -101,9 +115,34 @@ class App extends Vue {
     this.spread = spread;
   }
 
-  designerInitialized(designer) {
-    this.designer = designer;
+  setDesignerMenuDisable(){
+    if(this.disabledMenuList.length>0){
+      this.designer.setData("coopetation",true);
+      for(let i=0;i<this.disabledMenuList.length;i++){
+        let command=GC.Spread.Sheets.Designer.getCommand(this.disabledMenuList[i]);
+        command.enableContext=command.enableContext+"&&!coopetation";
+        this.designerConfig.commandMap[command.commandName]=command;
+        console.log("comamnd",command);
+      }
+      this.designer.setConfig(this.designerConfig);
+      this.designer.refresh()
+    }
+    
 
+    // this.designer.setData("coopetation",true);
+    // this.designer.refresh()
+    
+    // this.designer.setData("coopetation",true);
+    // designer.setConfig();
+    
+
+  }
+
+  designerInitialized(designer) {
+   
+    this.designer = designer; 
+    this.setDesignerMenuDisable();
+    // this.designer.getCommand(GC.Spread.Sheets.Designer.CommandNames.CommandNames())
     axios({
       method: "GET",
       url: `http://localhost:8080/api/doc/${this.docId}/${window["year"]}`,
@@ -114,7 +153,9 @@ class App extends Vue {
         workbook.fromJSON(result.data);
         this.resetSheetRowAndCol(workbook);
         // workbook.suspendPaint();
-      }).then( ()=>{
+      }).then(()=>{
+        
+      }).then(()=>{
         this.connnectWebSocket();
       }).then(()=>{
         var cm = this.designer.getWorkbook().commandManager();
@@ -173,6 +214,9 @@ class App extends Vue {
             // command._styles = null;
             var cm = this.designer.getWorkbook().commandManager();
             cm.removeListener('myListener');
+            if(command.fromSheet&&command.fromSheet!=""){
+                command.fromSheet=this.designer.getWorkbook().getSheetFromName(command.fromSheet);
+            }
             cm.execute(command);
             cm.addListener('myListener',(args)=>{
               this.onCommandExecute(args);
@@ -190,6 +234,14 @@ class App extends Vue {
     console.log(args.command);
     var command = args.command;
     var serverCommand = null;
+    if(command.fromSheet){
+      command.fromSheet=command.fromSheet.name();
+    }
+
+    if(command.cmd=="clipboardPaste"){
+      command.MA=null;
+      command.clipboardHtml=null;
+    }
 
     let frameBody={
       cmd:command.cmd,
@@ -282,31 +334,7 @@ class App extends Vue {
         frameBody.serverCommand=JSON.stringify(serverCommand);
 
       }
-      
-      if(command.cmd=="clipboardPaste"){
-        // command.MA=null;
-        // command.clipboardHtml=null;
-        // let temp=JSON.stringify(command);
-        // let max=  1024*12;
-        // while (true) {
-        //   // console.log(temp.length+" "+ max);
-        //   if (temp.length > max) {
-        //     let xx=temp.substring(0, max);
-        //     // console.log("frame:"+xx);
-        //     this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},xx);
-        //     temp = temp.substring(max);
-            
-        //   } else {
-        //     // console.log("frame:"+temp);
-        //     this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},temp);
-        //     return ;
-        //   }
-          
-        // }
 
-        // return;
-        // command.fromSheet=null;
-      }
       // let testCommand=""
       // // 16640  WebSocketSession
       // for(let i=0;i<1024*16+146;i++){
