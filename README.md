@@ -11,7 +11,7 @@
 
 * cd src/main/resources/public
 * npm install
-* npm run test
+* npm run build
 * 测试地址 http://localhost:8080/index/1111/5
 
 ## 前端说明
