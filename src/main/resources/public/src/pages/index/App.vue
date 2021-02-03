@@ -67,7 +67,11 @@ class App extends Vue {
   designerConfig=null;
   subscribeId="sub-"+new Date().getTime();
 
-  disabledMenuList=[];
+
+  disabledMenuList=[
+    GC.Spread.Sheets.Designer.CommandNames.CellType,
+    GC.Spread.Sheets.Designer.CommandNames.InsertShape
+  ];
 
   docId=window["docId"];
 
