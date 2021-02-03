@@ -67,6 +67,8 @@ class App extends Vue {
   designerConfig=null;
   subscribeId="sub-"+new Date().getTime();
 
+  disabledMenuList=[];
+
   docId=window["docId"];
 
   initRetry(){
@@ -77,6 +79,16 @@ class App extends Vue {
     let c=JSON.parse(
       JSON.stringify(DesignerGC.Spread.Sheets.Designer.DefaultConfig)
     );
+    c.commandMap={};
+    //禁用菜单配置
+    if(this.disabledMenuList.length>0){
+      for(let i=0;i<this.disabledMenuList.length;i++){
+        let command=GC.Spread.Sheets.Designer.getCommand(this.disabledMenuList[i]);
+        command.enableContext=command.enableContext+"&&!coopetation";
+        c.commandMap[command.commandName]=command;
+      }
+      
+    }
     this.designerConfig=c;
   }
 
@@ -97,7 +109,8 @@ class App extends Vue {
 
   designerInitialized(designer) {
     this.designer = designer;
-
+    this.designer.setData("coopetation",true);
+    this.designer.refresh()
     axios({
       method: "GET",
       url: `http://localhost:8080/doc/${this.docId}/${window["year"]}`,
