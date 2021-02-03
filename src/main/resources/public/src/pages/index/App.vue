@@ -156,6 +156,7 @@ class App extends Vue {
           if(this.subscribeId==frame.headers["sourceSubscription"]){
             console.log("丢弃自己的消息:"+frame.body);
           }else{ 
+            
             this.executeCommand(command);
           }
           
@@ -170,6 +171,9 @@ class App extends Vue {
     // command._styles = null;
     var cm = this.designer.getWorkbook().commandManager();
     cm.removeListener('myListener');
+    if(command.fromSheet&&command.fromSheet!=""){
+      command.fromSheet=this.designer.getWorkbook().getSheetFromName(command.fromSheet);
+    }
     cm.execute(command);
     cm.addListener('myListener',(args)=>{
       this.onCommandExecute(args);
@@ -187,6 +191,9 @@ class App extends Vue {
       //   command.clipboardHtml=null;
       //   // command.fromSheet=null;
       // }
+      if(command.fromSheet){
+        command.fromSheet=command.fromSheet.name();
+      }
       
       this.client.send(`/app/save/doc/${this.docId}`,{"sourceSubscription":this.subscribeId},JSON.stringify(command));
 
