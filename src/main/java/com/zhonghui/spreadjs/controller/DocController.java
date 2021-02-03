@@ -41,22 +41,22 @@ public class DocController extends BaseController {
 
     @Value("classpath:excel/spreadjs-demo.xlsx")
     Resource resource;
-
-    @Value("${temp-dir}")
-    String tempDir;
+//
+//    @Value("${temp-dir}")
+//    String tempDir;
 
     @RequestMapping(value = { "/{docId}/{year2}" },method = RequestMethod.GET)
     @ResponseBody
     public String createDocByTemplate(@PathVariable int year2,@PathVariable String docId) throws IOException {
-        String path= CommonUtil.joinFilePath(tempDir,docId+".xlsx");
+//        String path= CommonUtil.joinFilePath(tempDir,docId+".xlsx");
         int year=5;
         int startYear=2016;
         Workbook workbook = new Workbook();
-        File file =new File(path);
-        if(file.exists()){
-            workbook.open(path);
-            return workbook.toJson();
-        }
+//        File file =new File(path);
+//        if(file.exists()){
+//            workbook.open(path);
+//            return workbook.toJson();
+//        }
 
         workbook.open(resource.getInputStream());
         //基础信息
@@ -116,7 +116,7 @@ public class DocController extends BaseController {
 
         workbook.processTemplate();
 
-        workbook.save(path);
+//        workbook.save(path);
         return  workbook.toJson();
     }
 }
