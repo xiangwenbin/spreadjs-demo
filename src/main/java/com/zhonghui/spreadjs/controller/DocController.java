@@ -42,6 +42,8 @@ public class DocController extends BaseController {
     @Value("classpath:excel/spreadjs-demo.xlsx")
     Resource resource;
 
+    @Value("${temp-dir}")
+    String tempDir;
 
     @RequestMapping(value = { "/{docId}/{year2}" },method = RequestMethod.GET)
     @ResponseBody
@@ -56,7 +58,7 @@ public class DocController extends BaseController {
             return workbook.toJson();
         }
 
-        workbook.open(templateResource.getInputStream());
+        workbook.open(resource.getInputStream());
         //基础信息
         BasicInfoVo basicInfo= new BasicInfoVo();
         basicInfo.setCompany("中汇会计师事务所");
