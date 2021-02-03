@@ -2,7 +2,7 @@
 
 
 
-## mac 修改src/main/resources/config/application.properties logging.path temp-dir
+## mac 修改src/main/resources/config/application.properties logging.path
 
 ## java启动 
 * jvm 启动参数-Dspring.profiles.active=dev
