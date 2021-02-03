@@ -70,6 +70,7 @@ class App extends Vue {
 
   disabledMenuList=[
     GC.Spread.Sheets.Designer.CommandNames.CellType,
+    GC.Spread.Sheets.Designer.CommandNames.CellsInsert,
     GC.Spread.Sheets.Designer.CommandNames.InsertShape
   ];
 
