@@ -182,6 +182,9 @@ class App extends Vue {
       client.heartbeat.outgoing = heartbeat.outgoing; 
       client.heartbeat.incoming = heartbeat.incoming;
       client.maxWebSocketFrameSize=maxWebSocketFrameSize;
+      client.debug=function(){
+        
+      }
       client.connect({},(frame)=>{
         resolve(client);
       },(error)=>{
